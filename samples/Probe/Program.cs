@@ -14,4 +14,3 @@ try {
  if (!bytes.SequenceEqual(output.ToArray())) throw new Exception("S3 roundtrip mismatch");
  Console.WriteLine($"GARAGE_PROBE_OK: authenticated S3 PUT/GET matched all {bytes.Length} bytes");
 } finally { await client.DeleteObjectAsync(Get("BucketName"), key); }
-

@@ -39,4 +39,3 @@ docker build -t ghcr.io/patrickmatthiesen/garage-provisioner:0.1.0-preview.3 .
 The hosting package and provisioner image must be released together. Package publication is a separate explicit operation; local packing does not publish to NuGet.org. Preserve the Apache-2.0 license and NOTICE when redistributing.
 
 Build or pull the provisioner image before starting the sample. Its probe uploads, downloads and removes a 1.2 MB random object and verifies every byte. Stop it afterward with `aspire stop --apphost samples/AppHost/AppHost.csproj --non-interactive`.
-
