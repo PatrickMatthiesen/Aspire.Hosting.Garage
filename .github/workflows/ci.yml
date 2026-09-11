@@ -1,0 +1,16 @@
+name: Verify
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet test --configuration Release
+      - run: dotnet build samples/AppHost --configuration Release
+      - run: dotnet pack src/CommunityToolkit.Aspire.Hosting.Garage --configuration Release --output artifacts/packages
+      - run: docker build -t garage-provisioner:test .

@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+artifacts/
+.aspire/
+.vs/
+*.user
+.env*
+TestResults/

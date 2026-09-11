@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Aspire.AppHost.Sdk" Version="13.5.3" />
+  <PropertyGroup><OutputType>Exe</OutputType><UserSecretsId>garage-integration-sample</UserSecretsId><AspireUseCliBundle>true</AspireUseCliBundle></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.Docker" />
+    <ProjectReference Include="../../src/CommunityToolkit.Aspire.Hosting.Garage/CommunityToolkit.Aspire.Hosting.Garage.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="../Probe/Probe.csproj" />
+  </ItemGroup>
+</Project>

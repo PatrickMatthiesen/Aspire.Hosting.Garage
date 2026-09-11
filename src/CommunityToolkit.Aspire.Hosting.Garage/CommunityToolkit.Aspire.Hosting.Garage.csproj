@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>0.1.0-preview.3</Version>
+    <IsPackable>true</IsPackable>
+    <Description>Independent Garage S3 hosting integration for Aspire, structured for a Community Toolkit contribution.</Description>
+    <Authors>Patrick Matthiesen</Authors>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageTags>aspire;hosting;integration;garage;s3</PackageTags>
+    <RepositoryUrl>https://github.com/PatrickMatthiesen/CommunityToolkit.Aspire.Hosting.Garage</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>
