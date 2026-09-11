@@ -2,7 +2,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Aspire.Hosting.ApplicationModel;
 
-namespace CommunityToolkit.Aspire.Hosting.Garage;
+namespace Aspire.Hosting.Garage;
 
 public sealed partial class GarageBucketResource : Resource, IResourceWithParent<GarageResource>, IResourceWithConnectionString
 {

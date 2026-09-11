@@ -1,6 +1,6 @@
 using Aspire.Hosting.ApplicationModel;
 
-namespace CommunityToolkit.Aspire.Hosting.Garage;
+namespace Aspire.Hosting.Garage;
 
 public sealed class GarageResource(
     string name,

@@ -1,4 +1,4 @@
-namespace CommunityToolkit.Aspire.Hosting.Garage;
+namespace Aspire.Hosting.Garage;
 
 /// <summary>Single-node defaults. Supply explicit configuration for other topologies.</summary>
 public sealed class GarageResourceOptions
@@ -9,5 +9,5 @@ public sealed class GarageResourceOptions
     public string? ConfigContents { get; init; }
     public bool ProvisionSingleNodeLayout { get; init; } = true;
     public string ProvisionerImage { get; init; } = "ghcr.io/patrickmatthiesen/garage-provisioner";
-    public string ProvisionerTag { get; init; } = "0.1.0-preview.3";
+    public string ProvisionerTag { get; init; } = "0.1.0-preview.4";
 }

@@ -1,10 +1,10 @@
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
-using CommunityToolkit.Aspire.Hosting.Garage;
+using Aspire.Hosting.Garage;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace CommunityToolkit.Aspire.Hosting.Garage.Tests;
+namespace Aspire.Hosting.Garage.Tests;
 
 public sealed class GarageBuilderExtensionsTests
 {

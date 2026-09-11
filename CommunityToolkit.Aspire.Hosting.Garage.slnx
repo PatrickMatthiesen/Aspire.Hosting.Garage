@@ -1,5 +1,0 @@
-<Solution>
-  <Project Path="src/CommunityToolkit.Aspire.Hosting.Garage/CommunityToolkit.Aspire.Hosting.Garage.csproj" />
-  <Project Path="src/GarageProvisioner/GarageProvisioner.csproj" />
-  <Project Path="tests/CommunityToolkit.Aspire.Hosting.Garage.Tests/CommunityToolkit.Aspire.Hosting.Garage.Tests.csproj" />
-</Solution>

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/Hosting/Hosting.csproj" />
+  <Project Path="src/Provisioner/GarageProvisioner.csproj" />
+  <Project Path="tests/Hosting.Tests/Hosting.Tests.csproj" />
+</Solution>

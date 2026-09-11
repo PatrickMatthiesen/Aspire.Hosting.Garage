@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
-namespace CommunityToolkit.Aspire.Hosting.Garage;
+namespace Aspire.Hosting.Garage;
 public static class GarageBuilderExtensions
 {
     public static IResourceBuilder<GarageResource> AddGarage(

@@ -1,4 +1,4 @@
-namespace CommunityToolkit.Aspire.Hosting.Garage;
+namespace Aspire.Hosting.Garage;
 
 public static class GarageContainerImageTags
 {

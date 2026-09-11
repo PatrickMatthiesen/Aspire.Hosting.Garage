@@ -4,7 +4,7 @@
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="Aspire.Hosting.Docker" />
-    <ProjectReference Include="../../src/CommunityToolkit.Aspire.Hosting.Garage/CommunityToolkit.Aspire.Hosting.Garage.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="../../src/Hosting/Hosting.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="../Probe/Probe.csproj" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 using Aspire.Hosting.ApplicationModel;
 
-namespace CommunityToolkit.Aspire.Hosting.Garage;
+namespace Aspire.Hosting.Garage;
 
 /// <summary>A one-shot container that initializes Garage layout, keys, buckets and permissions.</summary>
 public sealed class GarageProvisionerResource(string name, GarageResource parent, long capacityBytes)

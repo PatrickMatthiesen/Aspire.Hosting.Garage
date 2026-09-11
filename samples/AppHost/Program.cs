@@ -1,4 +1,4 @@
-using CommunityToolkit.Aspire.Hosting.Garage;
+using Aspire.Hosting.Garage;
 
 var builder = DistributedApplication.CreateBuilder(args);
 builder.AddDockerComposeEnvironment("compose").WithDashboard(false);
