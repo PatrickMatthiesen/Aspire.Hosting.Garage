@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>Aspire.Hosting.Garage</AssemblyName>
-    <RootNamespace>Aspire.Hosting.Garage</RootNamespace>
-    <PackageId>Aspire.Hosting.Garage</PackageId>
-    <Version>0.1.0-preview.5</Version>
+    <AssemblyName>Subjective.Aspire.Hosting.Garage</AssemblyName>
+    <RootNamespace>Garage.Hosting</RootNamespace>
+    <PackageId>Subjective.Aspire.Hosting.Garage</PackageId>
+    <Version>0.1.0-preview.6</Version>
     <IsPackable>true</IsPackable>
     <Description>Garage S3 object storage integration for Aspire.</Description>
     <Authors>Patrick Matthiesen</Authors>

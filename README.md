@@ -6,10 +6,10 @@ Requires .NET 10, Aspire 13.5.3 or later, and a container runtime.
 
 ## Usage
 
-Reference the `Aspire.Hosting.Garage` package in your AppHost:
+Reference the `Subjective.Aspire.Hosting.Garage` package in your AppHost:
 
 ```csharp
-using Aspire.Hosting.Garage;
+using Aspire.Hosting;
 
 var garage = builder.AddGarage("storage").WithDataVolume();
 var photos = garage.AddBucket("photos", "place-photos");
@@ -25,7 +25,7 @@ The API receives `ConnectionStrings:photos` with the S3 endpoint, credentials, r
 
 ## Configuration
 
-Pass `GarageResourceOptions` to `AddGarage` to configure the region, capacity, custom TOML (`ConfigPath` or `ConfigContents`), and provisioner image. Standard Aspire methods configure endpoints, images, and volumes.
+Pass `GarageResourceOptions` from the `Garage.Hosting` namespace to `AddGarage` to configure the region, capacity, custom TOML (`ConfigPath` or `ConfigContents`), and provisioner image. Standard Aspire methods configure endpoints, images, and volumes.
 
 Use a named endpoint to choose a host port. The container's S3 port remains 3900:
 
@@ -50,4 +50,6 @@ The default configuration runs one node with replication factor one. Set `Provis
 
 Run `dotnet test` to test the library, or `aspire start --apphost samples/AppHost/AppHost.csproj` to run the sample.
 
-Releases publish preview packages to [NuGet.org](https://www.nuget.org/packages/Aspire.Hosting.Garage) and [GitHub Releases](https://github.com/PatrickMatthiesen/Aspire.Hosting.Garage/releases), alongside the matching provisioner container. The release workflow uses NuGet Trusted Publishing with the `Subjective` account and the `release.yml` policy.
+Releases publish preview packages to [NuGet.org](https://www.nuget.org/packages/Subjective.Aspire.Hosting.Garage) and [GitHub Releases](https://github.com/PatrickMatthiesen/Aspire.Hosting.Garage/releases), alongside the matching provisioner container. The release workflow uses NuGet Trusted Publishing with the `Subjective` account and a policy bound to `release.yml`. The policy must allow the package ID `Subjective.Aspire.Hosting.Garage`.
+
+The package and assembly name identify the independent publisher. Builder extensions use `Aspire.Hosting` and resource types use `Aspire.Hosting.ApplicationModel`, following Aspire's custom hosting integration conventions. Options and implementation helpers use `Garage.Hosting`. To migrate from the earlier GitHub packages, replace the package reference and update any `using Aspire.Hosting.Garage;` imports to these namespaces.

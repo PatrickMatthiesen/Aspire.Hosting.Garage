@@ -1,11 +1,11 @@
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Aspire.Hosting;
+using Garage.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-namespace Aspire.Hosting.Garage;
+namespace Aspire.Hosting;
 public static class GarageBuilderExtensions
 {
     public static IResourceBuilder<GarageResource> AddGarage(

@@ -1,8 +1,7 @@
 using System.Net;
 using System.Text.RegularExpressions;
-using Aspire.Hosting.ApplicationModel;
 
-namespace Aspire.Hosting.Garage;
+namespace Aspire.Hosting.ApplicationModel;
 
 public sealed partial class GarageBucketResource : Resource, IResourceWithParent<GarageResource>, IResourceWithConnectionString
 {

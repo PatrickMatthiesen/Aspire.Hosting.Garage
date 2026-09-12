@@ -1,7 +1,7 @@
 using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Aspire.Hosting.Garage;
+namespace Garage.Hosting;
 
 internal sealed class GarageProvisioningHealthCheck(
     ResourceNotificationService notifications,
