@@ -3,7 +3,7 @@
     <AssemblyName>Aspire.Hosting.Garage</AssemblyName>
     <RootNamespace>Aspire.Hosting.Garage</RootNamespace>
     <PackageId>Aspire.Hosting.Garage</PackageId>
-    <Version>0.1.0-preview.4</Version>
+    <Version>0.1.0-preview.5</Version>
     <IsPackable>true</IsPackable>
     <Description>Garage S3 object storage integration for Aspire.</Description>
     <Authors>Patrick Matthiesen</Authors>

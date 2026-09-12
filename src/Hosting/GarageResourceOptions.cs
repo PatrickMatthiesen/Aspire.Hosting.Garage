@@ -9,5 +9,5 @@ public sealed class GarageResourceOptions
     public string? ConfigContents { get; init; }
     public bool ProvisionSingleNodeLayout { get; init; } = true;
     public string ProvisionerImage { get; init; } = "ghcr.io/patrickmatthiesen/garage-provisioner";
-    public string ProvisionerTag { get; init; } = "0.1.0-preview.4";
+    public string ProvisionerTag { get; init; } = "0.1.0-preview.5";
 }

@@ -50,4 +50,4 @@ The default configuration runs one node with replication factor one. Set `Provis
 
 Run `dotnet test` to test the library, or `aspire start --apphost samples/AppHost/AppHost.csproj` to run the sample.
 
-Preview packages are available from [GitHub Releases](https://github.com/PatrickMatthiesen/Aspire.Hosting.Garage/releases), alongside the matching provisioner container. NuGet.org publication is not yet available.
+Releases publish preview packages to [NuGet.org](https://www.nuget.org/packages/Aspire.Hosting.Garage) and [GitHub Releases](https://github.com/PatrickMatthiesen/Aspire.Hosting.Garage/releases), alongside the matching provisioner container. The release workflow uses NuGet Trusted Publishing with the `Subjective` account and the `release.yml` policy.

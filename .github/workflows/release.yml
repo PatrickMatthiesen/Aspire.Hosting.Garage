@@ -1,15 +1,16 @@
 name: Release preview
 on:
   workflow_dispatch:
-permissions:
-  contents: write
-  packages: write
 concurrency:
   group: release
 jobs:
   release:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-dotnet@v5
@@ -35,6 +36,15 @@ jobs:
           tags: ghcr.io/patrickmatthiesen/garage-provisioner:${{ env.RELEASE_VERSION }}
           labels: org.opencontainers.image.source=https://github.com/PatrickMatthiesen/Aspire.Hosting.Garage
       - run: dotnet pack src/Hosting -c Release -o artifacts/packages
+      - name: Authenticate to NuGet.org
+        uses: NuGet/login@v1
+        id: nuget
+        with:
+          user: Subjective
+      - name: Publish to NuGet.org
+        env:
+          NUGET_API_KEY: ${{ steps.nuget.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push artifacts/packages/*.nupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
       - name: Publish package artifact
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
