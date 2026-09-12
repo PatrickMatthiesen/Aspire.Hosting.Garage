@@ -7,5 +7,5 @@ var photos = storage.AddBucket("photos", "sample-photos");
 storage.AddBucket("documents", "sample-documents");
 builder.AddProject<Projects.Probe>("probe")
     .WithReference(photos)
-    .WaitForCompletion(storage.Resource.Provisioner);
+    .WaitFor(storage);
 builder.Build().Run();

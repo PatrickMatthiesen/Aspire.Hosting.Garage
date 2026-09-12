@@ -3,6 +3,8 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 namespace Aspire.Hosting.Garage;
 public static class GarageBuilderExtensions
 {
@@ -52,6 +54,35 @@ public static class GarageBuilderExtensions
             .WithEnvironment(context => context.EnvironmentVariables["GARAGE_BUCKETS"] =
                 JsonSerializer.Serialize(resource.Buckets.Select(bucket => bucket.BucketName)))
             .WaitForStart(garage);
+
+        var healthCheckKey = $"{name}_provisioning";
+        builder.Services.AddHealthChecks().Add(new HealthCheckRegistration(
+            healthCheckKey,
+            services => new GarageProvisioningHealthCheck(
+                services.GetRequiredService<ResourceNotificationService>(), resource.Provisioner.Resource),
+            failureStatus: null, tags: null));
+        garage.WithHealthCheck(healthCheckKey);
+
+        builder.Eventing.Subscribe<BeforeStartEvent>((@event, _) =>
+        {
+            // AppHost health checks are not exported to Compose. Preserve provisioning
+            // readiness there with a completion dependency on each waiting consumer.
+            // Never add it to Garage itself: the provisioner needs Garage to start first.
+            foreach (var consumer in @event.Model.Resources)
+            {
+                var waits = consumer.Annotations.OfType<WaitAnnotation>().ToArray();
+                if (waits.Any(wait => wait.WaitType == WaitType.WaitUntilHealthy
+                    && (ReferenceEquals(wait.Resource, resource)
+                        || wait.Resource is GarageBucketResource bucket && ReferenceEquals(bucket.Parent, resource)))
+                    && !waits.Any(wait => ReferenceEquals(wait.Resource, resource.Provisioner.Resource)
+                        && wait.WaitType == WaitType.WaitForCompletion))
+                {
+                    consumer.Annotations.Add(new WaitAnnotation(resource.Provisioner.Resource, WaitType.WaitForCompletion, 0));
+                }
+            }
+
+            return Task.CompletedTask;
+        });
         return garage;
     }
     public static IResourceBuilder<GarageBucketResource> AddBucket(
@@ -61,8 +92,9 @@ public static class GarageBuilderExtensions
         var bucket = new GarageBucketResource(name, bucketName, garage.Resource);
         if (garage.Resource.Buckets.Any(existing => existing.BucketName == bucketName))
             throw new ArgumentException("This bucket is already declared on the Garage resource.", nameof(bucketName));
+        // Aspire inherits health checks from IResourceWithParent resources.
         var builder = garage.ApplicationBuilder.AddResource(bucket);
-        garage.Resource.Buckets.Add(bucket);
+        garage.Resource.AddBucket(bucket);
         return builder;
     }
     public static IResourceBuilder<GarageResource> WithDataVolume(this IResourceBuilder<GarageResource> garage, string? name = null)

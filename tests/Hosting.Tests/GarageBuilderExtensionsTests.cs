@@ -2,6 +2,7 @@ using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Garage;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Xunit;
 
 namespace Aspire.Hosting.Garage.Tests;
@@ -85,18 +86,25 @@ public sealed class GarageBuilderExtensionsTests
         Assert.Contains("BucketName=trip-thumbnails", thumbnails.Resource.ConnectionStringExpression.ValueExpression);
     }
 
-    [Fact]
-    public void ProvisionerWaitsForGarageAndConsumersCanWaitForProvisioner()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task WaitingForGarageOrBucketAlsoWaitsForSuccessfulProvisioning(bool waitForBucket)
     {
-        var builder = DistributedApplication.CreateBuilder();
+        var builder = DistributedApplication.CreateBuilder(["--operation", "publish"]);
         var garage = builder.AddGarage("storage", new GarageResourceOptions { ConfigContents = MinimalConfiguration });
         var bucket = garage.AddBucket("photos", "trip-photos");
         var consumer = builder.AddContainer("consumer", "busybox:1.36")
-            .WithReference(bucket)
-            .WaitForCompletion(garage.Resource.Provisioner!);
+            .WithReference(bucket);
+        if (waitForBucket) consumer.WaitFor(bucket);
+        else consumer.WaitFor(garage);
+        var startupOnly = builder.AddContainer("startup-only", "busybox:1.36").WaitForStart(garage);
 
         using var app = builder.Build();
         var model = app.Services.GetRequiredService<DistributedApplicationModel>();
+        await builder.Eventing.PublishAsync(new BeforeStartEvent(app.Services, model));
+        // Repeated model preparation must not accumulate duplicate dependencies.
+        await builder.Eventing.PublishAsync(new BeforeStartEvent(app.Services, model));
         var provisioner = model.Resources.OfType<GarageProvisionerResource>().SingleOrDefault();
         Assert.NotNull(provisioner);
 
@@ -106,6 +114,59 @@ public sealed class GarageBuilderExtensionsTests
 
         var consumerWait = Assert.Single(consumer.Resource.Annotations.OfType<WaitAnnotation>(), a => a.WaitType == WaitType.WaitForCompletion);
         Assert.Same(provisioner, consumerWait.Resource);
+        Assert.Empty(garage.Resource.Annotations.OfType<WaitAnnotation>());
+        Assert.DoesNotContain(startupOnly.Resource.Annotations.OfType<WaitAnnotation>(), a => a.WaitType == WaitType.WaitForCompletion);
+    }
+
+    [Fact]
+    public async Task ProvisioningHealthRequiresSuccessfulCompletionAndResetsOnRestart()
+    {
+        var builder = DistributedApplication.CreateBuilder();
+        var garage = builder.AddGarage("storage");
+        using var app = builder.Build();
+        var notifications = app.Services.GetRequiredService<ResourceNotificationService>();
+        var healthChecks = app.Services.GetRequiredService<HealthCheckService>();
+
+        async Task AssertHealth(HealthStatus expected)
+        {
+            var report = await healthChecks.CheckHealthAsync(registration => registration.Name == "storage_provisioning");
+            Assert.Single(report.Entries);
+            Assert.Equal(expected, report.Status);
+        }
+
+        Task SetState(string state, int? exitCode) => notifications.PublishUpdateAsync(
+            garage.Resource.Provisioner.Resource,
+            snapshot => snapshot with { State = new ResourceStateSnapshot(state, null), ExitCode = exitCode });
+
+        await AssertHealth(HealthStatus.Unhealthy);
+        await SetState(KnownResourceStates.Running, null);
+        await AssertHealth(HealthStatus.Unhealthy);
+        await SetState(KnownResourceStates.Exited, 1);
+        await AssertHealth(HealthStatus.Unhealthy);
+        await SetState(KnownResourceStates.Exited, null);
+        await AssertHealth(HealthStatus.Unhealthy);
+        await SetState(KnownResourceStates.Exited, 0);
+        await AssertHealth(HealthStatus.Healthy);
+        await SetState(KnownResourceStates.Running, null);
+        await AssertHealth(HealthStatus.Unhealthy);
+        await SetState(KnownResourceStates.Finished, 0);
+        await AssertHealth(HealthStatus.Healthy);
+    }
+
+    [Fact]
+    public void BucketCollectionCannotBypassRegistrationAndValidation()
+    {
+        var builder = DistributedApplication.CreateBuilder();
+        var garage = builder.AddGarage("storage");
+        var buckets = garage.Resource.Buckets;
+        var bucket = garage.AddBucket("photos", "trip-photos");
+
+        Assert.Same(bucket.Resource, Assert.Single(buckets));
+        Assert.True(bucket.Resource.TryGetAnnotationsIncludingAncestorsOfType<HealthCheckAnnotation>(out var checks));
+        Assert.Equal(checks.Count(), checks.Select(check => check.Key).Distinct().Count());
+        Assert.Throws<NotSupportedException>(() => ((ICollection<GarageBucketResource>)buckets).Clear());
+        Assert.Throws<ArgumentException>(() => garage.AddBucket("other", "trip-photos"));
+        Assert.Single(buckets);
     }
 
     [Fact]
