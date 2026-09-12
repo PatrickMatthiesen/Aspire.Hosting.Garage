@@ -44,6 +44,7 @@ public static class GarageBuilderExtensions
             .WithEndpoint(targetPort: 3901, name: GarageResource.RpcEndpointName)
             .WithHttpHealthCheck("/health", endpointName: GarageResource.AdminEndpointName);
         resource.Provisioner = builder.AddResource(new GarageProvisionerResource($"{name}-provisioner", resource, options.CapacityBytes))
+            .WithParentRelationship(garage)
             .WithImage(options.ProvisionerImage).WithImageTag(options.ProvisionerTag)
             .WithEnvironment("GARAGE_ADMIN_URL", resource.AdminEndpoint)
             .WithEnvironment("GARAGE_ADMIN_TOKEN", adminToken)
