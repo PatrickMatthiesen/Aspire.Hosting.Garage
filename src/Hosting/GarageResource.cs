@@ -15,7 +15,10 @@ public sealed class GarageResource(
     public const string AdminEndpointName = "admin";
     public const string RpcEndpointName = "rpc";
     public string Region { get; } = region;
-    public List<GarageBucketResource> Buckets { get; } = [];
+    private readonly List<GarageBucketResource> _buckets = [];
+    public IReadOnlyList<GarageBucketResource> Buckets => _buckets.AsReadOnly();
+
+    internal void AddBucket(GarageBucketResource bucket) => _buckets.Add(bucket);
     public IResourceBuilder<GarageProvisionerResource> Provisioner { get; internal set; } = null!;
     public const string DataPath = "/var/lib/garage";
     public const string DefaultDataPath = DataPath;
