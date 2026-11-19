@@ -5,7 +5,7 @@ builder.AddDockerComposeEnvironment("compose").WithDashboard(false);
 var storage = builder.AddGarage("storage").WithDataVolume("garage-integration-sample-data");
 var photos = storage.AddBucket("photos", "sample-photos");
 storage.AddBucket("documents", "sample-documents");
-builder.AddProject<Projects.Probe>("probe")
+builder.AddDotnetProject("probe", "../Probe/Probe.csproj")
     .WithReference(photos)
     .WaitFor(storage);
 builder.Build().Run();

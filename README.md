@@ -2,11 +2,11 @@
 
 Run [Garage](https://garagehq.deuxfleurs.fr/) S3 object storage in an Aspire application. The integration starts Garage, provisions buckets, and provides connection strings to your services.
 
-Requires .NET 10, Aspire 13.5.3 or later, and a container runtime.
+Requires .NET 10, Aspire 17.0 or later, and a container runtime.
 
 ## Usage
 
-Reference the `Subjective.Aspire.Hosting.Garage` package in your AppHost:
+Reference `Subjective.Aspire.Hosting.Garage` in your AppHost. The example also uses `Aspire.Hosting.Dotnet` to register the API project.
 
 ```csharp
 using Aspire.Hosting;
@@ -14,7 +14,7 @@ using Aspire.Hosting;
 var garage = builder.AddGarage("storage").WithDataVolume();
 var photos = garage.AddBucket("photos", "place-photos");
 
-builder.AddProject<Projects.Api>("api")
+builder.AddDotnetProject("api", "../Api/Api.csproj")
     .WithReference(photos)
     .WaitFor(garage);
 ```

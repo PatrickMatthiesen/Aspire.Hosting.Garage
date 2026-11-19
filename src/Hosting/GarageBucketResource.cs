@@ -12,6 +12,8 @@ public sealed partial class GarageBucketResource : Resource, IResourceWithParent
         Parent = parent;
     }
 
+    public override string ResourceTypeDisplayName => "Garage Bucket";
+
     public string BucketName { get; }
     public GarageResource Parent { get; }
 

@@ -3,6 +3,7 @@ using Aspire.Hosting.ApplicationModel;
 using Garage.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace Garage.Hosting.Tests;
@@ -77,11 +78,13 @@ public sealed class GarageBuilderExtensionsTests
         Assert.Equal(2, storage.Buckets.Count);
         Assert.Equal(["trip-photos", "trip-thumbnails"], storage.Buckets.Select(b => b.BucketName));
 
-#pragma warning disable CS0618 // Aspire 13.5.3 exposes this test helper; the replacement is not available on the package's supported API surface yet.
-        var environment = await provisioner.GetEnvironmentVariableValuesAsync(DistributedApplicationOperation.Publish);
-#pragma warning restore CS0618
-        Assert.Equal("[\"trip-photos\",\"trip-thumbnails\"]", environment["GARAGE_BUCKETS"]);
+        var executionConfiguration = await ExecutionConfigurationBuilder.Create(provisioner)
+            .WithEnvironmentVariablesConfig()
+            .BuildAsync(new(DistributedApplicationOperation.Publish), NullLogger.Instance, CancellationToken.None);
+        var bucketsVariable = Assert.Single(executionConfiguration.EnvironmentVariables, variable => variable.Key == "GARAGE_BUCKETS");
+        Assert.Equal("[\"trip-photos\",\"trip-thumbnails\"]", bucketsVariable.Value);
 
+        Assert.Equal("Garage Bucket", photos.Resource.ResourceTypeDisplayName);
         Assert.Equal("private-region", photos.Resource.Parent.Region);
         Assert.Contains("BucketName=trip-thumbnails", thumbnails.Resource.ConnectionStringExpression.ValueExpression);
     }
